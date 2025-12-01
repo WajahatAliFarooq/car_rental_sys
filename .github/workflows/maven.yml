@@ -43,6 +43,6 @@ jobs:
           mvn -B verify -Pjacoco,coveralls \
             org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
             -Dsonar.projectKey=WajahatAliFarooq_car_rental_sys \
-            -DrepoToken=${{ secrets.COVERALLS_REPO_TOKEN }} \
+            -DrepoToken=$COVERALLS_REPO_TOKEN \
             -DpullRequest=${{ github.event.pull_request.number }}
 
