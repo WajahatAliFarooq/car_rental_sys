@@ -1,0 +1,19 @@
+services:
+  car_rental_sys_mysql:
+    image: mysql:5.7
+    container_name: car_rental_sys_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: car_rental_sys
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: root_pass
+    ports:
+      - "3307:3306" 
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
+    driver: local
+
