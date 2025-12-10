@@ -1,12 +1,12 @@
 package com.example.car_rental_sys.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import com.example.car_rental_sys.dto.CarDTO;
 import com.example.car_rental_sys.entity.Car;
+import com.example.car_rental_sys.exception.CarRentalException;
 import com.example.car_rental_sys.repository.CarRepository;
 
 @Service
@@ -25,7 +25,7 @@ public class CarService {
 	}
 
 	public List<CarDTO> getAllCars() {
-		return carRepository.findAll().stream().map(CarDTO::fromEntity).collect(Collectors.toList());
+		return carRepository.findAll().stream().map(CarDTO::fromEntity).toList();
 	}
 
 	public CarDTO updateCar(Long id, CarDTO carDTO) {
@@ -45,7 +45,7 @@ public class CarService {
 
 	public void deleteCar(Long id) {
 		if (!carRepository.existsById(id)) {
-			throw new RuntimeException("Car not found with id: " + id);
+			throw new CarRentalException(id);
 		}
 		carRepository.deleteById(id);
 	}
