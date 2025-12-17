@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.car_rental_sys.dto.CarDTO;
 import com.example.car_rental_sys.entity.Car;
-import com.example.car_rental_sys.exception.CarRentalException;
+import com.example.car_rental_sys.exception.CarException;
 import com.example.car_rental_sys.repository.CarRepository;
 
 @Service
@@ -30,7 +30,7 @@ public class CarService {
 
 	public CarDTO updateCar(Long id, CarDTO carDTO) {
 		Car existingCar = carRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Car not found with id: " + id));
+				.orElseThrow(() -> new CarException(id));
 
 		existingCar.setMake(carDTO.getMake());
 		existingCar.setModel(carDTO.getModel());
@@ -45,7 +45,7 @@ public class CarService {
 
 	public void deleteCar(Long id) {
 		if (!carRepository.existsById(id)) {
-			throw new CarRentalException(id);
+			throw new CarException(id);
 		}
 		carRepository.deleteById(id);
 	}
