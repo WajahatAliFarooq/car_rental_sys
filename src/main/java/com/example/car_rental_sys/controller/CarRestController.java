@@ -29,7 +29,7 @@ class CarController {
 		return carService.createCar(carDTO);
 	}
 
-	@GetMapping("getall")
+	@GetMapping("/getall")
 	public List<CarDTO> getAllCars() {
 		return carService.getAllCars();
 	}

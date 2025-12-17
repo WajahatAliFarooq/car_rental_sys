@@ -33,7 +33,8 @@ class CarControllerTest {
 	@MockitoBean
 	private CarService carService;
 
-	private ObjectMapper mapper = new ObjectMapper();
+	@Autowired
+	private ObjectMapper mapper;
 
 	@Test
 	void testCreateCar() throws Exception {
