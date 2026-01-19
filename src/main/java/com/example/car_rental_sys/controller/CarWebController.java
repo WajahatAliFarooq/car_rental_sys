@@ -1,59 +1,62 @@
 package com.example.car_rental_sys.controller;
 
-import com.example.car_rental_sys.dto.CarDTO;
-import com.example.car_rental_sys.service.CarService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.example.car_rental_sys.dto.CarDTO;
+import com.example.car_rental_sys.service.CarService;
 
 @Controller
+@RequestMapping("/")
 public class CarWebController {
 
-    private final CarService carService;
+	private static final String REDIRECT_HOME = "redirect:/";
 
-    public CarWebController(CarService carService) {
-        this.carService = carService;
-    }
+	private final CarService carService;
 
-    @GetMapping
-    public String listCars(Model model) {
-        model.addAttribute("cars", carService.getAllCars());
-        return "car-list";
-    }
+	public CarWebController(CarService carService) {
+		this.carService = carService;
+	}
 
-    @GetMapping("/new")
-    public String showCreateForm(Model model) {
-        model.addAttribute("car", new CarDTO());
-        return "car-form";
-    }
+	@GetMapping
+	public String listCars(Model model) {
+		model.addAttribute("cars", carService.getAllCars());
+		return "car-list";
+	}
 
-    @PostMapping
-    public String createCar(@ModelAttribute("car") CarDTO carDTO) {
-        carService.createCar(carDTO);
-        return "redirect:/";
-    }
+	@GetMapping("/new")
+	public String showCreateForm(Model model) {
+		model.addAttribute("car", new CarDTO());
+		return "car-form";
+	}
 
-    @GetMapping("/{id}/edit")
-    public String showEditForm(@PathVariable Long id, Model model) {
-        model.addAttribute("car", carService.getAllCars()
-                .stream()
-                .filter(c -> c.getId().equals(id))
-                .findFirst()
-                .orElseThrow());
-        return "car-form";
-    }
+	@PostMapping
+	public String createCar(@ModelAttribute("car") CarDTO carDTO) {
+		carService.createCar(carDTO);
+		return REDIRECT_HOME;
+	}
 
-    @PostMapping("/{id}")
-    public String updateCar(@PathVariable Long id,
-                            @ModelAttribute("car") CarDTO carDTO) {
-        carService.updateCar(id, carDTO);
-        return "redirect:/";
-    }
+	@GetMapping("/{id}/edit")
+	public String showEditForm(@PathVariable Long id, Model model) {
+		model.addAttribute("car",
+				carService.getAllCars().stream().filter(c -> c.getId().equals(id)).findFirst().orElseThrow());
+		return "car-form";
+	}
 
-    @PostMapping("/{id}/delete")
-    public String deleteCar(@PathVariable Long id) {
-        carService.deleteCar(id);
-        return "redirect:/";
-    }
+	@PostMapping("/{id}")
+	public String updateCar(@PathVariable Long id, @ModelAttribute("car") CarDTO carDTO) {
+		carService.updateCar(id, carDTO);
+		return REDIRECT_HOME;
+	}
+
+	@PostMapping("/{id}/delete")
+	public String deleteCar(@PathVariable Long id) {
+		carService.deleteCar(id);
+		return REDIRECT_HOME;
+	}
 }
-

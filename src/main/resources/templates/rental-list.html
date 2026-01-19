@@ -6,7 +6,7 @@
 </head>
 <body>
 
-<div th:replace="navbar :: body"></div>
+<div th:replace="~{navbar :: body}"></div>
 
 <h2>Rental List</h2>
 
@@ -31,8 +31,8 @@
         <td th:text="${rental.endDate}"></td>
         <td th:text="${rental.totalPrice}"></td>
         <td>
-            <a th:href="@{/rentals/{id}/edit(id=${rental.id})}">Edit</a>
-            <form th:action="@{/rentals/{id}/delete(id=${rental.id})}" method="post">
+            <a th:href="@{'/rentals/' + ${rental.id} + '/edit'}">Edit</a>
+            <form th:action="@{|/rentals/${rental.id}/delete|}" method="post">
                 <button type="submit">Delete</button>
             </form>
         </td>

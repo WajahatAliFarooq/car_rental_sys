@@ -6,11 +6,11 @@
 </head>
 <body>
 
-<div th:replace="navbar :: body"></div>
+<div th:replace="~{navbar :: body}"></div>
 
 <h2>Car Form</h2>
 
-<form th:action="@{/cars}" th:object="${car}" method="post">
+<form th:action="@{|${car.id == null ? '/' : '/' + car.id}|}" th:object="${car}" method="post">
 
     <input type="hidden" th:field="*{id}" />
 
@@ -24,7 +24,7 @@
     <button type="submit">Save</button>
 </form>
 
-<a href="/cars">Back</a>
+<a href="/">Back</a>
 
 </body>
 </html>
