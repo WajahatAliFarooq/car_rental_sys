@@ -6,11 +6,11 @@
 </head>
 <body>
 
-<div th:replace="navbar :: body"></div>
+<div th:replace="~{navbar :: body}"></div>
 
 <h2>Rental Form</h2>
 
-<form th:action="@{/rentals}" th:object="${rental}" method="post">
+<form th:action="${rental.id == null} ? @{/rentals} : @{/rentals/{id}(id=${rental.id})}" th:object="${rental}" method="post">
 
     <input type="hidden" th:field="*{id}" />
 

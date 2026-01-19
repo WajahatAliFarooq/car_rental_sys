@@ -6,11 +6,11 @@
 </head>
 <body>
 
-<div th:replace="navbar :: body"></div>
+<div th:replace="~{navbar :: body}"></div>
 
 <h2>Car List</h2>
 
-<a href="/cars/new">Add New Car</a>
+<a href="/new">Add New Car</a>
 
 <table border="1">
     <tr>
