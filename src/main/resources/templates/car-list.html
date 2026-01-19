@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Cars</title>
+    <link rel="stylesheet" href="/css/style.css">    
+</head>
+<body>
+
+<div th:replace="navbar :: body"></div>
+
+<h2>Car List</h2>
+
+<a href="/cars/new">Add New Car</a>
+
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Make</th>
+        <th>Model</th>
+        <th>Plate</th>
+        <th>Year</th>
+        <th>Price</th>
+        <th>Available</th>
+        <th>Actions</th>
+    </tr>
+
+    <tr th:each="car : ${cars}">
+        <td th:text="${car.id}"></td>
+        <td th:text="${car.make}"></td>
+        <td th:text="${car.model}"></td>
+        <td th:text="${car.plate}"></td>
+        <td th:text="${car.year}"></td>
+        <td th:text="${car.dailyPrice}"></td>
+        <td th:text="${car.available}"></td>
+        <td>
+            <a th:href="@{/cars/{id}/edit(id=${car.id})}">Edit</a>
+            <form th:action="@{/cars/{id}/delete(id=${car.id})}" method="post">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+
+</table>
+
+</body>
+</html>
+
