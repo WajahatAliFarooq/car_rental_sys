@@ -25,8 +25,8 @@ import com.example.car_rental_sys.dto.RentalDTO;
 import com.example.car_rental_sys.service.RentalService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@WebMvcTest(RentalController.class)
-class RentalControllerTest {
+@WebMvcTest(RentalRestController.class)
+class RentalRestControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;

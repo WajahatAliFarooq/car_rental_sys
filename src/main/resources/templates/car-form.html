@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Car Form</title>
+    <link rel="stylesheet" href="/css/style.css">    
+</head>
+<body>
+
+<div th:replace="navbar :: body"></div>
+
+<h2>Car Form</h2>
+
+<form th:action="@{/cars}" th:object="${car}" method="post">
+
+    <input type="hidden" th:field="*{id}" />
+
+    Make: <input type="text" th:field="*{make}" /><br/>
+    Model: <input type="text" th:field="*{model}" /><br/>
+    Plate: <input type="text" th:field="*{plate}" /><br/>
+    Year: <input type="number" th:field="*{year}" /><br/>
+    Price: <input type="number" th:field="*{dailyPrice}" /><br/>
+    Available: <input type="checkbox" th:field="*{available}" /><br/>
+
+    <button type="submit">Save</button>
+</form>
+
+<a href="/cars">Back</a>
+
+</body>
+</html>

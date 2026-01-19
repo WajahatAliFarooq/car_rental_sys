@@ -16,11 +16,11 @@ import com.example.car_rental_sys.service.RentalService;
 
 @RestController
 @RequestMapping("/api/rentals")
-public class RentalController {
+public class RentalRestController {
 
 	private final RentalService rentalService;
 
-	public RentalController(RentalService rentalService) {
+	public RentalRestController(RentalService rentalService) {
 		this.rentalService = rentalService;
 	}
 

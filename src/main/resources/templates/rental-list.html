@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Rentals</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<div th:replace="navbar :: body"></div>
+
+<h2>Rental List</h2>
+
+<a href="/rentals/new">Add New Rental</a>
+
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Renter</th>
+        <th>Car ID</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Total Price</th>
+        <th>Actions</th>
+    </tr>
+
+    <tr th:each="rental : ${rentals}">
+        <td th:text="${rental.id}"></td>
+        <td th:text="${rental.renterName}"></td>
+        <td th:text="${rental.carId}"></td>
+        <td th:text="${rental.startDate}"></td>
+        <td th:text="${rental.endDate}"></td>
+        <td th:text="${rental.totalPrice}"></td>
+        <td>
+            <a th:href="@{/rentals/{id}/edit(id=${rental.id})}">Edit</a>
+            <form th:action="@{/rentals/{id}/delete(id=${rental.id})}" method="post">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>

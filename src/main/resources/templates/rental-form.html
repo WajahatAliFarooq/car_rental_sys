@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Rental Form</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<div th:replace="navbar :: body"></div>
+
+<h2>Rental Form</h2>
+
+<form th:action="@{/rentals}" th:object="${rental}" method="post">
+
+    <input type="hidden" th:field="*{id}" />
+
+    Renter Name:
+    <input type="text" th:field="*{renterName}" /><br/>
+
+    Car ID:
+    <input type="number" th:field="*{carId}" /><br/>
+
+    Start Date:
+    <input type="date" th:field="*{startDate}" /><br/>
+
+    End Date:
+    <input type="date" th:field="*{endDate}" /><br/>
+
+    Total Price:
+    <input type="number" th:field="*{totalPrice}" /><br/>
+
+    <button type="submit">Save</button>
+</form>
+
+<a href="/rentals">Back</a>
+
+</body>
+</html>
+

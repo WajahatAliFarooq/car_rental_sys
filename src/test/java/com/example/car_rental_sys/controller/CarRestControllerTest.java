@@ -25,7 +25,7 @@ import com.example.car_rental_sys.service.CarService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebMvcTest(CarController.class)
-class CarControllerTest {
+class CarRestControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
