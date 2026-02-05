@@ -1,7 +1,9 @@
 package com.example.car_rental_sys.controller;
 
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -49,13 +51,13 @@ class RentalWebControllerTest {
 	@Test
 	void testListRentals() throws Exception {
 		// Given
-		Mockito.when(rentalService.getAllRentals()).thenReturn(List.of(sampleRental()));
+		when(rentalService.getAllRentals()).thenReturn(List.of(sampleRental()));
 
 		// When
 		mockMvc.perform(get("/rentals")).andExpect(status().isOk()).andExpect(view().name("rental-list"))
 				.andExpect(model().attributeExists("rentals"));
 		// Verify
-		Mockito.verify(rentalService, times(1)).getAllRentals();
+		verify(rentalService, times(1)).getAllRentals();
 		verifyNoMoreInteractions(rentalService);
 	}
 
@@ -79,18 +81,27 @@ class RentalWebControllerTest {
 				.andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/rentals"));
 
 		// Verify
-		Mockito.verify(rentalService, times(1)).createRental(Mockito.any(RentalDTO.class));
+		verify(rentalService, times(1)).createRental(Mockito.any(RentalDTO.class));
 		verifyNoMoreInteractions(rentalService);
 	}
 
 	@Test
 	void testShowEditForm() throws Exception {
 		// Given
-		Mockito.when(rentalService.getAllRentals()).thenReturn(List.of(sampleRental()));
+		RentalDTO rental = sampleRental();
+
+		when(rentalService.getRentalById(1L)).thenReturn(rental);
 
 		// When
 		mockMvc.perform(get("/rentals/1/edit")).andExpect(status().isOk()).andExpect(view().name("rental-form"))
-				.andExpect(model().attributeExists("rental"));
+				.andExpect(model().attributeExists("rental")).andExpect(model().attribute("rental", rental))
+				.andExpect(model().attributeExists("formAction"))
+				.andExpect(model().attribute("formAction", "/rentals/1"));
+
+		// Then
+		// Verify
+		verify(rentalService, times(1)).getRentalById(1L);
+		verifyNoMoreInteractions(rentalService);
 	}
 
 	@Test
@@ -105,7 +116,7 @@ class RentalWebControllerTest {
 				.andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/rentals"));
 
 		// Verify
-		Mockito.verify(rentalService, times(1)).updateRental(Mockito.eq(rentalId), Mockito.any());
+		verify(rentalService, times(1)).updateRental(Mockito.eq(rentalId), Mockito.any());
 		verifyNoMoreInteractions(rentalService);
 	}
 
@@ -120,7 +131,7 @@ class RentalWebControllerTest {
 				.andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/rentals"));
 
 		// Verify
-		Mockito.verify(rentalService, times(1)).deleteRental(rentalId);
+		verify(rentalService, times(1)).deleteRental(rentalId);
 		verifyNoMoreInteractions(rentalService);
 	}
 }

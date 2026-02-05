@@ -10,7 +10,7 @@ public class CarDTO {
 	private String plate;
 	private int year;
 	private int dailyPrice;
-	private boolean available;
+	private boolean available = false;
 
 	public CarDTO() {
 	}

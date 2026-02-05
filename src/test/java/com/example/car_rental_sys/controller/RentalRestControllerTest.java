@@ -37,11 +37,26 @@ class RentalRestControllerTest {
 	@Autowired
 	private ObjectMapper mapper;
 
+	private final LocalDate start = LocalDate.now();
+	private final LocalDate end = start.plusDays(2);
+
+	private RentalDTO sampleRental() {
+		return new RentalDTO(1L, "Wajahat", start, end, 200, 10L);
+	}
+
+	private RentalDTO sampleRental2() {
+		return new RentalDTO(2L, "Ali", start, end, 300, 10L);
+	}
+
+	private RentalDTO sampleRentalWithoutId() {
+		return new RentalDTO(null, "Wajahat", start, end, 200, 10L);
+	}
+
 	@Test
 	void testCreateRental() throws Exception {
 		// Given
-		RentalDTO rentalDto = new RentalDTO(null, "Wajahat", LocalDate.now(), LocalDate.now().plusDays(2), 200, 1L);
-		RentalDTO savedDTO = new RentalDTO(1L, "Wajahat", LocalDate.now(), LocalDate.now().plusDays(2), 200, 1L);
+		RentalDTO rentalDto = sampleRentalWithoutId();
+		RentalDTO savedDTO = sampleRental();
 
 		// When
 		when(rentalService.createRental(any(RentalDTO.class))).thenReturn(savedDTO);
@@ -57,8 +72,8 @@ class RentalRestControllerTest {
 	@Test
 	void testGetAllRentals() throws Exception {
 		// Given
-		RentalDTO r1 = new RentalDTO(1L, "Wajahat", LocalDate.now(), LocalDate.now().plusDays(2), 200, 1L);
-		RentalDTO r2 = new RentalDTO(2L, "Ali", LocalDate.now(), LocalDate.now().plusDays(3), 300, 1L);
+		RentalDTO r1 = sampleRental();
+		RentalDTO r2 = sampleRental2();
 
 		// When
 		when(rentalService.getAllRentals()).thenReturn(Arrays.asList(r1, r2));
@@ -74,8 +89,8 @@ class RentalRestControllerTest {
 	@Test
 	void testUpdateRental() throws Exception {
 		// Given
-		RentalDTO rentalDto = new RentalDTO(null, "Ali", LocalDate.now(), LocalDate.now().plusDays(3), 300, 1L);
-		RentalDTO updated = new RentalDTO(1L, "Ali", LocalDate.now(), LocalDate.now().plusDays(3), 300, 1L);
+		RentalDTO rentalDto = sampleRentalWithoutId();
+		RentalDTO updated = sampleRental();
 
 		// When
 		when(rentalService.updateRental(eq(1L), any(RentalDTO.class))).thenReturn(updated);
@@ -83,7 +98,7 @@ class RentalRestControllerTest {
 		// Then
 		mockMvc.perform(MockMvcRequestBuilders.put("/api/rentals/update/1").contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(rentalDto))).andExpect(status().isOk())
-				.andExpect(jsonPath("$.renterName").value("Ali"));
+				.andExpect(jsonPath("$.renterName").value("Wajahat"));
 		// Verify
 		verify(rentalService, times(1)).updateRental(anyLong(), any(RentalDTO.class));
 	}

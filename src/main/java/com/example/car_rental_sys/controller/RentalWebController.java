@@ -43,8 +43,12 @@ public class RentalWebController {
 
 	@GetMapping("/{id}/edit")
 	public String showEditForm(@PathVariable Long id, Model model) {
-		model.addAttribute("rental",
-				rentalService.getAllRentals().stream().filter(r -> r.getId().equals(id)).findFirst().orElseThrow());
+
+		RentalDTO rental = rentalService.getRentalById(id);
+
+		model.addAttribute("rental", rental);
+		model.addAttribute("formAction", "/rentals/" + id);
+
 		return "rental-form";
 	}
 
