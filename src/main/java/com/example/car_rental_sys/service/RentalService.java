@@ -36,6 +36,7 @@ public class RentalService {
 	}
 
 	public RentalDTO updateRental(Long id, RentalDTO rentalDTO) {
+
 		Rental existingRental = rentalRepository.findById(id).orElseThrow(() -> new CarRentalException("Rental", id));
 
 		Car car = carRepository.findById(rentalDTO.getCarId())
@@ -48,6 +49,7 @@ public class RentalService {
 		existingRental.setCar(car);
 
 		Rental updated = rentalRepository.save(existingRental);
+
 		return RentalDTO.fromEntity(updated);
 	}
 
@@ -57,4 +59,10 @@ public class RentalService {
 		}
 		rentalRepository.deleteById(id);
 	}
+
+	public RentalDTO getRentalById(Long id) {
+		return rentalRepository.findById(id).map(RentalDTO::fromEntity)
+				.orElseThrow(() -> new RuntimeException("Rental not found"));
+	}
+
 }

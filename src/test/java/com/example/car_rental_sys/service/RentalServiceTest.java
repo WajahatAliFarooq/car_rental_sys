@@ -1,6 +1,7 @@
 package com.example.car_rental_sys.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
@@ -15,6 +16,7 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -38,6 +40,7 @@ class RentalServiceTest {
 	private RentalService rentalService;
 
 	private Car car;
+	private Car car2;
 	private Rental rental;
 
 	@BeforeEach
@@ -46,6 +49,9 @@ class RentalServiceTest {
 
 		car = new Car("Toyota", "Corolla", "WA786", 2025, 100);
 		car.setId(1L);
+
+		car2 = new Car("Honda", "Civic", "WA999", 2024, 120);
+		car2.setId(2L);
 
 		rental = new Rental("Wajahat", LocalDate.now(), LocalDate.now().plusDays(2), car);
 		rental.setId(1L);
@@ -71,7 +77,7 @@ class RentalServiceTest {
 	}
 
 	@Test
-	void testCreateRental_CarNotFound_ThrowException() {
+	void testCreateRental_NotFound() {
 		// Given
 		when(carRepository.findById(99L)).thenReturn(Optional.empty());
 
@@ -104,28 +110,41 @@ class RentalServiceTest {
 	@Test
 	void testUpdateRental() {
 		// Given
-		Rental updatedRental = new Rental("Ali", LocalDate.now(), LocalDate.now().plusDays(3), car);
-		updatedRental.setId(1L);
+		LocalDate newStartDate = LocalDate.now().plusDays(1);
+		LocalDate newEndDate = LocalDate.now().plusDays(5);
+
+		rental.setCar(car2);
+
+		RentalDTO dto = new RentalDTO(null, "Ali", newStartDate, newEndDate, 300, car.getId());
 
 		when(rentalRepository.findById(1L)).thenReturn(Optional.of(rental));
-		when(carRepository.findById(1L)).thenReturn(Optional.of(car));
-		when(rentalRepository.save(any(Rental.class))).thenReturn(updatedRental);
+		when(carRepository.findById(car.getId())).thenReturn(Optional.of(car));
 
-		RentalDTO dto = new RentalDTO(null, "Ali", LocalDate.now(), LocalDate.now().plusDays(3), 300, 1L);
+		when(rentalRepository.save(any(Rental.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
 		// When
 		RentalDTO updatedDto = rentalService.updateRental(1L, dto);
 
 		// Then
-		// Assert
 		assertEquals("Ali", updatedDto.getRenterName());
+		assertEquals(newStartDate, updatedDto.getStartDate());
+		assertEquals(newEndDate, updatedDto.getEndDate());
+		assertEquals(300, updatedDto.getTotalPrice());
+		assertEquals(car.getId(), updatedDto.getCarId());
 
-		// Verify
-		verify(rentalRepository, times(1)).save(any(Rental.class));
+		// Capture
+		ArgumentCaptor<Rental> captor = ArgumentCaptor.forClass(Rental.class);
+		verify(rentalRepository).save(captor.capture());
+
+		Rental savedRental = captor.getValue();
+
+		// Assert
+		assertEquals(car, savedRental.getCar());
+		assertNotEquals(car2, savedRental.getCar());
 	}
 
 	@Test
-	void testUpdateRental_RentalNotFound_ThrowException() {
+	void testUpdateRental_RentalNotFound() {
 		// Given
 		when(rentalRepository.findById(5L)).thenReturn(Optional.empty());
 
@@ -144,7 +163,7 @@ class RentalServiceTest {
 	}
 
 	@Test
-	void testUpdateRental_CarNotFound_ThrowException() {
+	void testUpdateRental_CarNotFound() {
 		// Given
 		when(rentalRepository.findById(1L)).thenReturn(Optional.of(rental));
 		when(carRepository.findById(99L)).thenReturn(Optional.empty());
@@ -177,7 +196,7 @@ class RentalServiceTest {
 	}
 
 	@Test
-	void testDeleteRental_NotFound_ThrowException() {
+	void testDeleteRental_NotFound() {
 		// Given
 		when(rentalRepository.existsById(2L)).thenReturn(false);
 
@@ -192,4 +211,31 @@ class RentalServiceTest {
 		verify(rentalRepository, never()).deleteById(any());
 
 	}
+
+	@Test
+	void testGetRentalById() {
+		// Given
+		when(rentalRepository.findById(1L)).thenReturn(Optional.of(rental));
+
+		// When
+		RentalDTO dto = rentalService.getRentalById(1L);
+
+		// Then
+		assertEquals(1L, dto.getId());
+		assertEquals("Wajahat", dto.getRenterName());
+
+		verify(rentalRepository, times(1)).findById(1L);
+	}
+
+	@Test
+	void testGetRentalById_NotFound() {
+		// Given
+		when(rentalRepository.findById(99L)).thenReturn(Optional.empty());
+
+		// When //Then
+		RuntimeException ex = assertThrows(RuntimeException.class, () -> rentalService.getRentalById(99L));
+		// Assert
+		assertEquals("Rental not found", ex.getMessage());
+	}
+
 }

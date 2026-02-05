@@ -4,6 +4,7 @@ package com.example.car_rental_sys.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -16,6 +17,7 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -78,11 +80,12 @@ class CarServiceTest {
 	@Test
 	void testUpdateCar() {
 		// Given
-		Car updatedCar = new Car("Honda", "Civic", "WA786", 2025, 100);
-		updatedCar.setId(1L);
+		Car existingCar = new Car("Toyota", "Yaris", "OLD123", 2020, 50);
+		existingCar.setId(1L);
+		existingCar.setAvailable(false);
 
-		when(carRepository.findById(1L)).thenReturn(Optional.of(car));
-		when(carRepository.save(any(Car.class))).thenReturn(updatedCar);
+		when(carRepository.findById(1L)).thenReturn(Optional.of(existingCar));
+		when(carRepository.save(any(Car.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
 		CarDTO dto = new CarDTO(null, "Honda", "Civic", "WA786", 2025, 100, true);
 
@@ -90,15 +93,29 @@ class CarServiceTest {
 		CarDTO updatedDto = carService.updateCar(1L, dto);
 
 		// Then
-		// Assert
 		assertEquals("Honda", updatedDto.getMake());
+		assertEquals("Civic", updatedDto.getModel());
+		assertEquals("WA786", updatedDto.getPlate());
+		assertEquals(2025, updatedDto.getYear());
+		assertEquals(100, updatedDto.getDailyPrice());
+		assertTrue(updatedDto.isAvailable());
 
-		// Verify
-		verify(carRepository, times(1)).save(any(Car.class));
+		// Then
+		ArgumentCaptor<Car> captor = ArgumentCaptor.forClass(Car.class);
+		verify(carRepository).save(captor.capture());
+
+		Car savedCar = captor.getValue();
+
+		assertEquals("Honda", savedCar.getMake());
+		assertEquals("Civic", savedCar.getModel());
+		assertEquals("WA786", savedCar.getPlate());
+		assertEquals(2025, savedCar.getYear());
+		assertEquals(100, savedCar.getDailyPrice());
+		assertTrue(savedCar.isAvailable());
 	}
 
 	@Test
-	void testUpdateCar_CarNotFound_ThrowException() {
+	void testUpdateCar_NotFound() {
 		// Given
 		Long carId = 99L;
 		when(carRepository.findById(carId)).thenReturn(Optional.empty());
@@ -141,4 +158,37 @@ class CarServiceTest {
 		// Assert
 		assertEquals("Car not found with id: 2", exception.getMessage());
 	}
+
+	@Test
+	void testGetCarById() {
+		// Given
+		when(carRepository.findById(1L)).thenReturn(Optional.of(car));
+
+		// When
+		CarDTO result = carService.getCarById(1L);
+
+		// Then
+		assertNotNull(result);
+		assertEquals(car.getId(), result.getId());
+		assertEquals(car.getMake(), result.getMake());
+
+		// Verify
+		verify(carRepository, times(1)).findById(1L);
+	}
+
+	@Test
+	void testGetCarById_NotFound() {
+		// Given
+		when(carRepository.findById(99L)).thenReturn(Optional.empty());
+
+		// When
+		assertThrows(CarRentalException.class, () -> {
+			carService.getCarById(99L);
+		});
+
+		// Then
+		// Verify
+		verify(carRepository).findById(99L);
+	}
+
 }

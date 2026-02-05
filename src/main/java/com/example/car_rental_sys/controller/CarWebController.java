@@ -43,8 +43,12 @@ public class CarWebController {
 
 	@GetMapping("/{id}/edit")
 	public String showEditForm(@PathVariable Long id, Model model) {
-		model.addAttribute("car",
-				carService.getAllCars().stream().filter(c -> c.getId().equals(id)).findFirst().orElseThrow());
+
+		CarDTO car = carService.getCarById(id);
+
+		model.addAttribute("car", car);
+		model.addAttribute("formAction", "/" + id);
+
 		return "car-form";
 	}
 

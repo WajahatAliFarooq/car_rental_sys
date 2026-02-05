@@ -36,11 +36,23 @@ class CarRestControllerTest {
 	@Autowired
 	private ObjectMapper mapper;
 
+	private CarDTO sampleCar() {
+		return new CarDTO(1L, "Toyota", "Corolla", "WA786", 2025, 100, true);
+	}
+	
+	private CarDTO sampleCar2() {
+		return new CarDTO(2L, "Peugeot", "308", "GK786", 2025, 100, true);
+	}
+	
+	private CarDTO sampleCarWithoutId() {
+		return new CarDTO(null, "Toyota", "Corolla", "WA786", 2025, 100, true);
+	}
+
 	@Test
 	void testCreateCar() throws Exception {
 		// Given
-		CarDTO carDTO = new CarDTO(null, "Toyota", "Corolla", "WA786", 2025, 100, true);
-		CarDTO savedDTO = new CarDTO(1L, "Toyota", "Corolla", "WA786", 2025, 100, true);
+		CarDTO carDTO = sampleCarWithoutId();
+		CarDTO savedDTO = sampleCar();
 
 		// When
 		when(carService.createCar(any(CarDTO.class))).thenReturn(savedDTO);
@@ -56,8 +68,8 @@ class CarRestControllerTest {
 	@Test
 	void testGetAllCars() throws Exception {
 		// Given
-		CarDTO car1 = new CarDTO(1L, "Toyota", "Corolla", "WA786", 2025, 100, true);
-		CarDTO car2 = new CarDTO(2L, "Peugeot", "308", "GK786", 2025, 100, true);
+		CarDTO car1 = sampleCar();
+		CarDTO car2 = sampleCar2();
 
 		// When
 		when(carService.getAllCars()).thenReturn(Arrays.asList(car1, car2));
@@ -73,8 +85,8 @@ class CarRestControllerTest {
 	@Test
 	void testUpdateCar() throws Exception {
 		// Given
-		CarDTO carDTO = new CarDTO(null, "Toyota", "Corolla", "WA786", 2025, 100, true);
-		CarDTO updated = new CarDTO(1L, "Toyota", "Corolla", "WA786", 2025, 100, true);
+		CarDTO carDTO = sampleCarWithoutId();
+		CarDTO updated = sampleCar();
 
 		// When
 		when(carService.updateCar(eq(1L), any(CarDTO.class))).thenReturn(updated);

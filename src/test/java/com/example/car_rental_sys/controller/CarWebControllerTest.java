@@ -1,7 +1,9 @@
 package com.example.car_rental_sys.controller;
 
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -45,13 +47,13 @@ class CarWebControllerTest {
 	@Test
 	void testListCars() throws Exception {
 		// Given
-		Mockito.when(carService.getAllCars()).thenReturn(List.of(sampleCar()));
+		when(carService.getAllCars()).thenReturn(List.of(sampleCar()));
 
 		// When
 		mockMvc.perform(get("/")).andExpect(status().isOk()).andExpect(view().name("car-list"))
 				.andExpect(model().attributeExists("cars"));
 		// Verify
-		Mockito.verify(carService, times(1)).getAllCars();
+		verify(carService, times(1)).getAllCars();
 		verifyNoMoreInteractions(carService);
 	}
 
@@ -76,18 +78,24 @@ class CarWebControllerTest {
 				.andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/"));
 
 		// Verify
-		Mockito.verify(carService, times(1)).createCar(Mockito.any(CarDTO.class));
+		verify(carService, times(1)).createCar(Mockito.any(CarDTO.class));
 		verifyNoMoreInteractions(carService);
 	}
 
 	@Test
 	void testShowEditForm() throws Exception {
 		// Given
-		Mockito.when(carService.getAllCars()).thenReturn(List.of(sampleCar()));
+		CarDTO carDTO = sampleCar();
+		when(carService.getCarById(1L)).thenReturn(carDTO);
 
 		// When
 		mockMvc.perform(get("/1/edit")).andExpect(status().isOk()).andExpect(view().name("car-form"))
-				.andExpect(model().attributeExists("car"));
+				.andExpect(model().attributeExists("car")).andExpect(model().attributeExists("formAction"))
+				.andExpect(model().attribute("formAction", "/1"));
+
+		// Then
+		verify(carService, times(1)).getCarById(1L);
+		verifyNoMoreInteractions(carService);
 	}
 
 	@Test
@@ -102,7 +110,7 @@ class CarWebControllerTest {
 				.andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/"));
 
 		// Verify
-		Mockito.verify(carService, times(1)).updateCar(Mockito.eq(carId), Mockito.any());
+		verify(carService, times(1)).updateCar(Mockito.eq(carId), Mockito.any());
 		verifyNoMoreInteractions(carService);
 	}
 
@@ -117,7 +125,7 @@ class CarWebControllerTest {
 				.andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/"));
 
 		// Verify
-		Mockito.verify(carService, times(1)).deleteCar(carId);
+		verify(carService, times(1)).deleteCar(carId);
 		verifyNoMoreInteractions(carService);
 	}
 }

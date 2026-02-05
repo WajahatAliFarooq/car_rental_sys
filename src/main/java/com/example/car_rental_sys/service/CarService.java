@@ -29,8 +29,7 @@ public class CarService {
 	}
 
 	public CarDTO updateCar(Long id, CarDTO carDTO) {
-		Car existingCar = carRepository.findById(id)
-				.orElseThrow(() -> new CarRentalException(id));
+		Car existingCar = carRepository.findById(id).orElseThrow(() -> new CarRentalException(id));
 
 		existingCar.setMake(carDTO.getMake());
 		existingCar.setModel(carDTO.getModel());
@@ -48,6 +47,10 @@ public class CarService {
 			throw new CarRentalException(id);
 		}
 		carRepository.deleteById(id);
+	}
+
+	public CarDTO getCarById(Long id) {
+		return carRepository.findById(id).map(CarDTO::fromEntity).orElseThrow(() -> new CarRentalException(id));
 	}
 
 }
