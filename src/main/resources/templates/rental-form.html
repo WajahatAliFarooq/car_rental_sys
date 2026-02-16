@@ -15,21 +15,21 @@
     <input type="hidden" th:field="*{id}" />
 
     Renter Name:
-    <input type="text" th:field="*{renterName}" /><br/>
+    <input type="text" th:field="*{renterName}" name="renterName" /><br/>
 
     Car ID:
-    <input type="number" th:field="*{carId}" /><br/>
+    <input type="number" th:field="*{carId}" name="carId" /><br/>
 
     Start Date:
-    <input type="date" th:field="*{startDate}" /><br/>
+    <input type="date" th:field="*{startDate}" name="startDate" /><br/>
 
     End Date:
-    <input type="date" th:field="*{endDate}" /><br/>
+    <input type="date" th:field="*{endDate}" name="endDate" /><br/>
 
     Total Price:
-    <input type="number" th:field="*{totalPrice}" /><br/>
+    <input type="number" th:field="*{totalPrice}" name="totalPrice" /><br/>
 
-    <button type="submit">Save</button>
+    <button type="submit" name="btn_submit">Save</button>
 </form>
 
 <a href="/rentals">Back</a>

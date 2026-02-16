@@ -32,6 +32,7 @@ public class RentalWebController {
 	@GetMapping("/new")
 	public String showCreateForm(Model model) {
 		model.addAttribute("rental", new RentalDTO());
+		model.addAttribute("formAction", "/rentals");
 		return "rental-form";
 	}
 
