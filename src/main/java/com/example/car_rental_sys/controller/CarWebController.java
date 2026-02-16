@@ -32,6 +32,8 @@ public class CarWebController {
 	@GetMapping("/new")
 	public String showCreateForm(Model model) {
 		model.addAttribute("car", new CarDTO());
+
+	    model.addAttribute("formAction", "/");
 		return "car-form";
 	}
 

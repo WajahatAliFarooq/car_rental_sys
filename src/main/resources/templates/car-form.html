@@ -15,14 +15,15 @@
 
     <input type="hidden" th:field="*{id}" />
 
-    Make: <input type="text" th:field="*{make}" /><br/>
-    Model: <input type="text" th:field="*{model}" /><br/>
-    Plate: <input type="text" th:field="*{plate}" /><br/>
-    Year: <input type="number" th:field="*{year}" /><br/>
-    Price: <input type="number" th:field="*{dailyPrice}" /><br/>
-    Available: <input type="checkbox" th:field="*{available}" /><br/>
+    Make: <input type="text" th:field="*{make}" name="make"/><br/>
+    Model: <input type="text" th:field="*{model}" name="model"/><br/>
+    Plate: <input type="text" th:field="*{plate}" name="plate"/><br/>
+    Year: <input type="number" th:field="*{year}" name="year"/><br/>
+    Price: <input type="number" th:field="*{dailyPrice}" name="dailyPrice"/><br/>
+    Available: <input type="checkbox" th:field="*{available}" name="available"/><br/>
 
-    <button type="submit">Save</button>
+    <button type="submit" name="btn_submit">Save</button>
+
 </form>
 
 <a href="/">Back</a>
