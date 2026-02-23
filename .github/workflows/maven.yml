@@ -40,7 +40,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
         run: |
-          mvn -B verify -Pjacoco,coveralls \
+          mvn -B verify -Pjacoco,coveralls,pit-test \
             org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
             -Dsonar.projectKey=WajahatAliFarooq_car_rental_sys \
             -DrepoToken=$COVERALLS_REPO_TOKEN \
