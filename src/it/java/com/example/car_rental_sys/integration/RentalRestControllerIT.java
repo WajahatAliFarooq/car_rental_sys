@@ -121,10 +121,8 @@ class RentalRestControllerIT extends TestContainerCon {
 		RentalDTO[] rentals = response.getBody();
 
 		// Assert
-		assertThat(rentals).isNotNull();
-		assertThat(rentals).hasSize(2);
-
-		assertThat(rentals).extracting(RentalDTO::getId).containsExactlyInAnyOrder(rental1.getId(), rental2.getId());
+		assertThat(rentals).isNotNull().hasSize(2).extracting(RentalDTO::getId)
+				.containsExactlyInAnyOrder(rental1.getId(), rental2.getId());
 	}
 
 	@Test
