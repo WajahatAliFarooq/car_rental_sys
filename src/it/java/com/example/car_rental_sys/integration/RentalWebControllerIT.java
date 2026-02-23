@@ -61,7 +61,7 @@ class RentalWebControllerIT extends TestContainerCon {
 	void setup() {
 		baseUrl = "http://localhost:" + port + "/rentals";
 		driver = new HtmlUnitDriver(true);
-		
+
 		cleanupDatabase();
 	}
 
@@ -70,10 +70,10 @@ class RentalWebControllerIT extends TestContainerCon {
 		driver.quit();
 		cleanupDatabase();
 	}
-	
+
 	private void cleanupDatabase() {
-	    rentalService.getAllRentals().forEach(r -> rentalService.deleteRental(r.getId()));
-	    carService.getAllCars().forEach(c -> carService.deleteCar(c.getId()));
+		rentalService.getAllRentals().forEach(r -> rentalService.deleteRental(r.getId()));
+		carService.getAllCars().forEach(c -> carService.deleteCar(c.getId()));
 	}
 
 	@Test
@@ -128,7 +128,7 @@ class RentalWebControllerIT extends TestContainerCon {
 		assertThat(created.getTotalPrice()).isEqualTo(200);
 
 		// Verify
-		assertThat(rentalService.getAllRentals().size()).isEqualTo(1);
+		assertThat(rentalService.getAllRentals()).hasSize(1);
 	}
 
 	@Test

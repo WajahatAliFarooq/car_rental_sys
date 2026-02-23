@@ -53,9 +53,9 @@ class CarWebControllerIT extends TestContainerCon {
 		driver.quit();
 		cleanupDatabase();
 	}
-	
+
 	private void cleanupDatabase() {
-	    carService.getAllCars().forEach(c -> carService.deleteCar(c.getId()));
+		carService.getAllCars().forEach(c -> carService.deleteCar(c.getId()));
 	}
 
 	@Test
@@ -111,7 +111,7 @@ class CarWebControllerIT extends TestContainerCon {
 		assertThat(created.getDailyPrice()).isEqualTo(100);
 
 		// Verify
-		assertThat(carService.getAllCars().size()).isEqualTo(1);
+		assertThat(carService.getAllCars()).hasSize(1);
 	}
 
 	@Test
