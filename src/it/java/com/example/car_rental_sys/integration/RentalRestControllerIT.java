@@ -42,7 +42,7 @@ class RentalRestControllerIT extends TestContainerCon {
 	private String baseUrl;
 
 	@BeforeEach
-	public void setup() {
+	void setup() {
 		baseUrl = "http://localhost:" + port + "/api/rentals";
 
 		rentalRepository.deleteAll();
@@ -82,7 +82,7 @@ class RentalRestControllerIT extends TestContainerCon {
 	}
 
 	@Test
-	public void testCreateRental() {
+	void testCreateRental() {
 		// Given
 		Car carEntity = carRepository.save(sampleCar().toEntity());
 
@@ -104,7 +104,7 @@ class RentalRestControllerIT extends TestContainerCon {
 	}
 
 	@Test
-	public void testGetAllRentals() {
+	void testGetAllRentals() {
 		// Given
 		Car carEntity = carRepository.save(sampleCar().toEntity());
 
@@ -119,7 +119,7 @@ class RentalRestControllerIT extends TestContainerCon {
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
 		RentalDTO[] rentals = response.getBody();
-		
+
 		// Assert
 		assertThat(rentals).isNotNull();
 		assertThat(rentals).hasSize(2);
@@ -128,7 +128,7 @@ class RentalRestControllerIT extends TestContainerCon {
 	}
 
 	@Test
-	public void testUpdateRental() {
+	void testUpdateRental() {
 		// Given
 		Car car1 = carRepository.save(sampleCar().toEntity());
 		Rental saved = rentalRepository.save(sampleRental(car1.getId()).toEntity(car1));
@@ -155,7 +155,7 @@ class RentalRestControllerIT extends TestContainerCon {
 	}
 
 	@Test
-	public void testDeleteRental() {
+	void testDeleteRental() {
 		// Given
 		Car carEntity = carRepository.save(sampleCar().toEntity());
 		Rental saved = rentalRepository.save(sampleRental(carEntity.getId()).toEntity(carEntity));

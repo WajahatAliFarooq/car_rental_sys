@@ -32,7 +32,7 @@ class CarRestControllerIT extends TestContainerCon {
 	private String baseUrl;
 
 	@BeforeEach
-	public void setup() {
+	void setup() {
 		baseUrl = "http://localhost:" + port + "/api/cars";
 		carRepository.deleteAll();
 		carRepository.flush();
@@ -56,7 +56,7 @@ class CarRestControllerIT extends TestContainerCon {
 	}
 
 	@Test
-	public void testCreateCar() {
+	void testCreateCar() {
 		// Given
 		CarDTO dto = sampleCar();
 
