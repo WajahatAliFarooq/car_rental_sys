@@ -1,5 +1,6 @@
 package com.example.car_rental_sys.controller;
 
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -21,6 +22,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.example.car_rental_sys.dto.CarDTO;
+import com.example.car_rental_sys.exception.CarRentalException;
 import com.example.car_rental_sys.service.CarService;
 
 @WebMvcTest(CarWebController.class)
@@ -127,5 +129,28 @@ class CarWebControllerTest {
 		// Verify
 		verify(carService, times(1)).deleteCar(carId);
 		verifyNoMoreInteractions(carService);
+	}
+
+	@Test
+	void testDeleteCar_WhenException() throws Exception {
+
+		// Given
+		Long carId = 1L;
+
+		doThrow(new CarRentalException("Car cannot be deleted, it has active rentals")).when(carService)
+				.deleteCar(carId);
+
+		when(carService.getAllCars()).thenReturn(List.of(sampleCar()));
+
+		// When
+		mockMvc.perform(post("/{id}/delete", carId))
+
+				// Then
+				.andExpect(status().isOk()).andExpect(view().name("car-list"))
+				.andExpect(model().attributeExists("cars")).andExpect(model().attributeExists("errorMessage"));
+
+		// Verify
+		verify(carService).deleteCar(carId);
+		verify(carService).getAllCars();
 	}
 }

@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.5.11</version>
+		<version>3.5.13</version>
 		<relativePath/>
 	</parent>
 	<groupId>com.example</groupId>
@@ -94,7 +94,17 @@
             <artifactId>selenium-support</artifactId>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.github.bonigarcia</groupId>
+            <artifactId>webdrivermanager</artifactId>
+            <version>5.7.0</version>
+            <scope>test</scope>
+        </dependency>
         
 	</dependencies>
 
@@ -114,6 +124,7 @@
                         <configuration>
                             <sources>
                                 <source>src/it/java</source>
+                                <source>src/e2e/java</source>
                             </sources>
                         </configuration>
                     </execution>
@@ -132,6 +143,7 @@
                     </includes>
                     <excludes>
                         <exclude>**/*IT.java</exclude>
+                        <exclude>**/*E2E.java</exclude>
                     </excludes>
                 </configuration>
             </plugin>
@@ -149,6 +161,7 @@
                 <configuration>
                     <includes>
                         <include>**/*IT.java</include>
+                        <include>**/*E2E.java</include>
                     </includes>
                 </configuration>
             </plugin>
@@ -158,12 +171,13 @@
                 <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>0.8.12</version>
+                    <version>0.8.14</version>
                     <configuration>
                         <excludes>
                             <exclude>**/CarRentalSysApplication.*</exclude>
                             <exclude>**/entity/*.*</exclude>
                             <exclude>**/dto/*.*</exclude>
+                            <exclude>com/gargoylesoftware/htmlunit/**</exclude>
                         </excludes>
                     </configuration>
                     <executions>

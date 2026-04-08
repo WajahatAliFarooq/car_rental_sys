@@ -8,6 +8,10 @@ public class CarRentalException extends RuntimeException {
 		super("Car not found with id: " + id);
 	}
 
+	public CarRentalException(String message) {
+		super(message);
+	}
+
 	public CarRentalException(String type, Long rentalId) {
 		super(type + " not found with id: " + rentalId);
 	}

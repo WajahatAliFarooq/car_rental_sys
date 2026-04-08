@@ -2,6 +2,7 @@ package com.example.car_rental_sys.controller;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.car_rental_sys.dto.CarDTO;
+import com.example.car_rental_sys.exception.CarRentalException;
 import com.example.car_rental_sys.service.CarService;
 
 @RestController
@@ -40,7 +42,13 @@ class CarController {
 	}
 
 	@DeleteMapping("/delete/{id}")
-	public void deleteCar(@PathVariable Long id) {
-		carService.deleteCar(id);
+	public ResponseEntity<String> deleteCar(@PathVariable Long id) {
+		try {
+			carService.deleteCar(id);
+			return ResponseEntity.ok("Deleted");
+
+		} catch (CarRentalException ex) {
+			return ResponseEntity.badRequest().body(ex.getMessage());
+		}
 	}
 }
