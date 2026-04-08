@@ -10,6 +10,10 @@
 
 <h2>Car List</h2>
 
+<div th:if="${errorMessage}" style="color: red; font-weight: bold;">
+    <p th:text="${errorMessage}"></p>
+</div>
+
 <a href="/new">Add New Car</a>
 
 <table id="car_table" border="1">
@@ -33,8 +37,8 @@
         <td th:text="${car.dailyPrice}"></td>
         <td th:text="${car.available}"></td>
         <td>
-            <a th:href="@{/cars/{id}/edit(id=${car.id})}">Edit</a>
-            <form th:action="@{/cars/{id}/delete(id=${car.id})}" method="post">
+            <a th:href="@{/{id}/edit(id=${car.id})}">Edit</a>
+            <form th:action="@{/{id}/delete(id=${car.id})}" method="post">
                 <button type="submit">Delete</button>
             </form>
         </td>

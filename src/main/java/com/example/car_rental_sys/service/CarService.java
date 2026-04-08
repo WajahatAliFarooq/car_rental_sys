@@ -8,14 +8,17 @@ import com.example.car_rental_sys.dto.CarDTO;
 import com.example.car_rental_sys.entity.Car;
 import com.example.car_rental_sys.exception.CarRentalException;
 import com.example.car_rental_sys.repository.CarRepository;
+import com.example.car_rental_sys.repository.RentalRepository;
 
 @Service
 public class CarService {
 
 	private final CarRepository carRepository;
+	private final RentalRepository rentalRepository;
 
-	public CarService(CarRepository carRepository) {
+	public CarService(CarRepository carRepository, RentalRepository rentalRepository) {
 		this.carRepository = carRepository;
+		this.rentalRepository = rentalRepository;
 	}
 
 	public CarDTO createCar(CarDTO carDTO) {
@@ -43,9 +46,15 @@ public class CarService {
 	}
 
 	public void deleteCar(Long id) {
+
 		if (!carRepository.existsById(id)) {
 			throw new CarRentalException(id);
 		}
+
+		if (rentalRepository.existsByCarId(id)) {
+			throw new CarRentalException("Car cannot be deleted, it has active rentals");
+		}
+
 		carRepository.deleteById(id);
 	}
 

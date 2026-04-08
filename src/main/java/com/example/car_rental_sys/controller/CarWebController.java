@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.car_rental_sys.dto.CarDTO;
+import com.example.car_rental_sys.exception.CarRentalException;
 import com.example.car_rental_sys.service.CarService;
 
 @Controller
@@ -33,7 +34,7 @@ public class CarWebController {
 	public String showCreateForm(Model model) {
 		model.addAttribute("car", new CarDTO());
 
-	    model.addAttribute("formAction", "/");
+		model.addAttribute("formAction", "/");
 		return "car-form";
 	}
 
@@ -61,8 +62,16 @@ public class CarWebController {
 	}
 
 	@PostMapping("/{id}/delete")
-	public String deleteCar(@PathVariable Long id) {
-		carService.deleteCar(id);
-		return REDIRECT_HOME;
+	public String deleteCar(@PathVariable Long id, Model model) {
+		try {
+			carService.deleteCar(id);
+			return REDIRECT_HOME;
+		} catch (CarRentalException ex) {
+
+			model.addAttribute("cars", carService.getAllCars());
+			model.addAttribute("errorMessage", ex.getMessage());
+
+			return "car-list";
+		}
 	}
 }

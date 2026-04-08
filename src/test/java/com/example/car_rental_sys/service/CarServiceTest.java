@@ -9,6 +9,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -26,11 +27,15 @@ import com.example.car_rental_sys.dto.CarDTO;
 import com.example.car_rental_sys.entity.Car;
 import com.example.car_rental_sys.exception.CarRentalException;
 import com.example.car_rental_sys.repository.CarRepository;
+import com.example.car_rental_sys.repository.RentalRepository;
 
 class CarServiceTest {
 
 	@Mock
 	private CarRepository carRepository;
+
+	@Mock
+	private RentalRepository rentalRepository;
 
 	@InjectMocks
 	private CarService carService;
@@ -137,13 +142,16 @@ class CarServiceTest {
 	void testDeleteCar() {
 		// Given
 		when(carRepository.existsById(1L)).thenReturn(true);
+		when(rentalRepository.existsByCarId(1L)).thenReturn(false);
 
 		// When
 		carService.deleteCar(1L);
 
 		// Then
 		// Verify
+		verify(carRepository).existsById(1L);
 		verify(carRepository, times(1)).deleteById(1L);
+		verifyNoMoreInteractions(carRepository);
 	}
 
 	@Test
@@ -157,6 +165,22 @@ class CarServiceTest {
 		// Then
 		// Assert
 		assertEquals("Car not found with id: 2", exception.getMessage());
+	}
+
+	@Test
+	void testDeleteCar_WithRentals() {
+		// Given
+		when(carRepository.existsById(1L)).thenReturn(true);
+		when(rentalRepository.existsByCarId(1L)).thenReturn(true);
+
+		// When
+		CarRentalException ex = assertThrows(CarRentalException.class, () -> {
+			carService.deleteCar(1L);
+		});
+
+		// Then
+		assertEquals("Car cannot be deleted, it has active rentals", ex.getMessage());
+		verify(carRepository, never()).deleteById(any());
 	}
 
 	@Test

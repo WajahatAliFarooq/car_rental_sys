@@ -4,6 +4,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -21,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.example.car_rental_sys.dto.CarDTO;
+import com.example.car_rental_sys.exception.CarRentalException;
 import com.example.car_rental_sys.service.CarService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -39,11 +41,11 @@ class CarRestControllerTest {
 	private CarDTO sampleCar() {
 		return new CarDTO(1L, "Toyota", "Corolla", "WA786", 2025, 100, true);
 	}
-	
+
 	private CarDTO sampleCar2() {
 		return new CarDTO(2L, "Peugeot", "308", "GK786", 2025, 100, true);
 	}
-	
+
 	private CarDTO sampleCarWithoutId() {
 		return new CarDTO(null, "Toyota", "Corolla", "WA786", 2025, 100, true);
 	}
@@ -102,14 +104,29 @@ class CarRestControllerTest {
 
 	@Test
 	void testDeleteCar() throws Exception {
+
 		// When
 		doNothing().when(carService).deleteCar(1L);
 
 		// Then
-		mockMvc.perform(MockMvcRequestBuilders.delete("/api/cars/delete/1")).andExpect(status().isOk());
+		mockMvc.perform(MockMvcRequestBuilders.delete("/api/cars/delete/1")).andExpect(status().isOk())
+				.andExpect(jsonPath("$").value("Deleted"));
 
 		// Verify
 		verify(carService, times(1)).deleteCar(1L);
+	}
+
+	@Test
+	void testDeleteCar_exception() throws Exception {
+
+		// When
+		doThrow(new CarRentalException("Car cannot be deleted, it has active rentals")).when(carService).deleteCar(1L);
+
+		// Then
+		mockMvc.perform(MockMvcRequestBuilders.delete("/api/cars/delete/1")).andExpect(status().isBadRequest());
+
+		// Verify
+		verify(carService).deleteCar(1L);
 	}
 
 }
